@@ -4,6 +4,8 @@
 #include "resource.h"
 #include <ctime>
 
+#include "Productos.h"
+
 #define MI_TIMER 16
 time_t tiempoActual;
 tm* infoTiempo;
@@ -36,16 +38,7 @@ struct InfoVendedor {
 	InfoVendedor* prevInfoVendedor;
 }*oInfoVendedor, * aInfoVendedor;
 
-struct productos {
-	int IDProducto;
-	int IDUser;
-	string nombreProducto, cantidadProducto, codigoProducto, marcaProducto, precioProducto;
-	char descripcionProducto[MAX_PATH] = "";
-	char fotoP1[MAX_PATH] = "";
-	char fotoP2[MAX_PATH] = "";
-	productos* nextProducto;
-	productos* prevProducto;
-}*oProducto, *aProducto;
+
 
 productos* buscadorDeProductos(int IP) {
 	productos* aProd = oProducto;
@@ -733,21 +726,12 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			}
 
 			if (oProducto != NULL) {
-				bool found = true;
-				while (aProducto->nombreProducto.compare(nombreDelProducto) != 0) {
-					if (aProducto->nextProducto == NULL) {
-						found = false;
-						break;
-					}
-					aProducto = aProducto->nextProducto;
-				}
-				if (found == true) {
+				buscarProductoPorNombre(nombreDelProducto);
+				
+				if (aProducto != NULL) {
 					MessageBox(NULL, "Ya hay un producto con ese nombre", "NO ALTA", MB_ICONASTERISK);
-					aProducto = oProducto;
 					break;
 				}
-				else
-					aProducto = oProducto;
 			}
 
 			if (nombreDelProducto.compare("") == 1 && cantidadEnInventario.compare("") == 1 && codigoDelProducto.compare("") == 1 && descripcionDelProducto.compare("") == 1 && marcaDelProducto.compare("") == 1 && foto1.compare("")==1 && foto2.compare("") == 1 && precio.compare("")==1) {
