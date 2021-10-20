@@ -1218,10 +1218,96 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	case WM_INITDIALOG: {
 		hMenu = LoadMenu(hGInstance, MAKEINTRESOURCE(IDR_MENU1));
 		SetMenu(hwnd, hMenu);
-		//loadInfoVendedor();
+
+		HWND hLbEnviosResumen = GetDlgItem(hwnd, LB_ENVIOSDELETE);
+		char cEnvios[50];
+		int selIndex = (int)SendMessage(hLbEnviosResumen, LB_GETCURSEL, NULL, NULL);
+		SendMessage(hLbEnviosResumen, LB_GETTEXT, (WPARAM)selIndex, (LPARAM)cEnvios);
+
+		aEnvios = oEnvios;
+
+		int contador = 1;
+		while (aEnvios != NULL) {
+			string nombreEnvio;
+			nombreEnvio.append("Envio #");
+			nombreEnvio.append(to_string(contador));
+			int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
+			SendMessage(hLbEnviosResumen, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
+			aEnvios = aEnvios->nextEnvio;
+			contador++;
+		}aEnvios = oEnvios;
+
 	}break;
 	case WM_COMMAND: {
 		switch (LOWORD(wparam)) {
+		case LB_ENVIOSDELETE: {
+			if (HIWORD(wparam) == LBN_SELCHANGE) {
+
+				if (oEnvios == NULL)
+					break;
+
+
+				int index = SendDlgItemMessage(hwnd, LB_ENVIOSDELETE, LB_GETCURSEL, NULL, NULL);
+				int idEnvio = SendDlgItemMessage(hwnd, LB_ENVIOSDELETE, LB_GETITEMDATA, index, NULL);
+
+				aEnvios = oEnvios;
+
+				while (aEnvios != NULL) {
+					if (aEnvios->IDEnvio == idEnvio)
+						break;
+					aEnvios = aEnvios->nextEnvio;
+				}
+
+				if (aEnvios == NULL)
+					break;
+
+				Envios* aShow = aEnvios;
+			}
+		}break;
+		case BTN_DELETEENV: {
+
+			if (aEnvios == NULL) {
+				break;
+			}
+
+			if (oEnvios == NULL) {
+				MessageBox(NULL, "No hay envios en la lista", "SIN PRODUCTOS", MB_OK);
+				break;
+			}
+
+			if (MessageBox(NULL, "¿Esta seguro que desea eliminar este envio?", "ADVERTENCIA", MB_OKCANCEL) == IDCANCEL) {
+				break;
+			}
+
+			HWND hLbEnviosResumen = GetDlgItem(hwnd, LB_ENVIOSDELETE);
+			int index = SendDlgItemMessage(hwnd, LB_ENVIOSDELETE, LB_GETCURSEL, NULL, NULL);
+			SendMessage(hLbEnviosResumen, LB_DELETESTRING, (WPARAM)index, 0);
+			
+			if (aEnvios->nextEnvio == NULL && aEnvios->prevEnvio == NULL) {
+				delete aEnvios;
+				oEnvios = aEnvios = NULL;
+			}
+
+			else if (aEnvios->nextEnvio == NULL) {
+				aEnvios->prevEnvio->nextEnvio = NULL;
+				delete aEnvios;
+				aEnvios = oEnvios;
+			}
+			else if (aEnvios->prevEnvio == NULL) {
+				oEnvios = oEnvios->nextEnvio;
+				oEnvios->prevEnvio = NULL;
+				delete aEnvios;
+				aEnvios = oEnvios;
+			}
+			else {
+				aEnvios->prevEnvio->nextEnvio = aEnvios->nextEnvio;
+				aEnvios->nextEnvio->prevEnvio = aEnvios->prevEnvio;
+				delete aEnvios;
+				aEnvios = oEnvios;
+			}
+			saveEnvios(aEnvios);
+
+		}break;
 		case BTN_MODIFYENV: {
 			HWND hModEnv = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_MODIFY), NULL, fModify);
 			ShowWindow(hModEnv, SW_SHOW);
@@ -1543,9 +1629,9 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 			char* pch;
 			char* dup = _strdup(fechaNacimiento.c_str());
 			pch = strtok(dup, "/");
-			ltm->tm_mon = atoi(strtok(NULL, "/"));
+			ltm->tm_mday = atoi(strtok(NULL, "/"));
 			ltm->tm_year = atoi(strtok(NULL, "/"));
-			ltm->tm_mday = atoi(pch);
+			ltm->tm_mon = atoi(pch);
 
 			time(&tiempoActual);
 			infoTiempo = localtime(&tiempoActual);
@@ -1580,10 +1666,20 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 
 			string aFecha = year;
 
-			if (ltm->tm_year < infoTiempo->tm_year || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon<infoTiempo->tm_mon) || (ltm->tm_year==infoTiempo->tm_year && ltm->tm_mon==infoTiempo->tm_mon && ltm->tm_mday<=infoTiempo->tm_mday)) {
+			if (ltm->tm_year < infoTiempo->tm_year || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon < infoTiempo->tm_mon) || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon == infoTiempo->tm_mon && ltm->tm_mday <= infoTiempo->tm_mday)) {
 				MessageBox(NULL, "Fecha de envio no valida", "NO ALTA", MB_ICONASTERISK);
 				break;
 			}
+
+			/*if (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon < infoTiempo->tm_mon) {
+				MessageBox(NULL, "Fecha de envio no valida", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}
+
+			if ( ltm->tm_year==infoTiempo->tm_year && ltm->tm_mon==infoTiempo->tm_mon && ltm->tm_mday<=infoTiempo->tm_mday) {
+				MessageBox(NULL, "Fecha de envio no valida", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}*/
 
 			if (cantidadEnvio.compare("") == 0 || calle.compare("") == 0 || colonia.compare("") == 0 || ciudad.compare("") == 0 || estado.compare("") == 0 || mensaje.compare("") == 0) {
 				MessageBox(NULL, "Falto llenar la informacion", "NO ALTA", MB_ICONASTERISK);

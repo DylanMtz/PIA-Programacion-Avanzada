@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Español (México) resources
+// Spanish (Mexico) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
 LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
@@ -110,10 +110,10 @@ CAPTION "Envíos"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     LTEXT           "Envíos:",IDC_STATIC,17,15,24,8
-    LISTBOX         IDC_LIST1,14,25,164,167,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LISTBOX         LB_ENVIOSDELETE,14,25,164,167,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
     PUSHBUTTON      "Modificar datos",BTN_MODIFYENV,192,57,78,14
     PUSHBUTTON      "Mostrar envíos",BTN_MOSTRARENVIO,192,90,78,14
-    PUSHBUTTON      "Eliminar",IDC_BUTTON4,192,124,78,14
+    PUSHBUTTON      "Eliminar",BTN_DELETEENV,192,124,78,14
     PUSHBUTTON      "Nuevo envío",BTN_NUEVOENVIO,192,158,78,14
 END
 
@@ -515,7 +515,7 @@ BEGIN
     END
 END
 
-#endif    // Español (México) resources
+#endif    // Spanish (Mexico) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

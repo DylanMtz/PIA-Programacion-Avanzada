@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Archivo de inclusión generado de Microsoft Visual C++.
-// Usado por PIA PA.rc
+// Microsoft Visual C++ generated include file.
+// Used by PIA PA.rc
 //
 #define IDD_LOGIN                       101
 #define IDD_REGISTER                    103
@@ -61,6 +61,7 @@
 #define IDC_EDIT1                       1023
 #define PB_SHOWFOTOP1                   1023
 #define TXT_CONFIRMPASSWORD             1023
+#define BTN_DELETEENV                   1023
 #define IDC_BUTTON5                     1024
 #define IDC_EDIT2                       1024
 #define IDC_EDIT3                       1025
@@ -159,6 +160,7 @@
 #define LBL_CIUDAD1                     1121
 #define LBL_EDO1                        1122
 #define LBL_MSJ1                        1123
+#define LB_ENVIOSDELETE                 1124
 #define ID_WATCHINFO                    40014
 #define ID_PRODUCTOS_VER                40020
 #define ID_SALIR                        40021
@@ -177,7 +179,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40032
-#define _APS_NEXT_CONTROL_VALUE         1124
+#define _APS_NEXT_CONTROL_VALUE         1125
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
