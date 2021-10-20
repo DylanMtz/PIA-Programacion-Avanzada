@@ -71,4 +71,18 @@ productos* crearProducto(
 	return nuevoProducto;
 }
 
+
+void insertarProductoEnLista(productos* nuevoProducto)
+{
+	aProducto = oProducto;
+	while (aProducto->nextProducto != NULL) {
+		aProducto = aProducto->nextProducto;
+	}
+
+	aProducto->nextProducto = nuevoProducto;
+	nuevoProducto->prevProducto = aProducto;
+	aProducto = nuevoProducto;
+	aProducto = oProducto;
+}
+
 #endif // !_PRODUCTOS_H_
