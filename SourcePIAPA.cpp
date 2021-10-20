@@ -748,29 +748,9 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 					oProducto = aProducto = nuevoProducto;
 				}
 				else {
-					while (aProducto->nextProducto != NULL) {
-						aProducto = aProducto->nextProducto;
-					}
-					aProducto->nextProducto = new productos;
-					aProducto->nextProducto->prevProducto = aProducto;
-					aProducto = aProducto->nextProducto;
-					aProducto->nombreProducto = nombreDelProducto;
-					aProducto->cantidadProducto = cantidadEnInventario;
-					aProducto->codigoProducto = codigoDelProducto;
-					aProducto->marcaProducto = marcaDelProducto;
-					aProducto->IDProducto = aProducto->prevProducto->IDProducto + 1;
-					for (int i = 0; i < MAX_PATH; i++) {
-						aProducto->descripcionProducto[i] = desc[i];
-						aProducto->fotoP1[i] = fotoProducto1[i];
-						aProducto->fotoP2[i] = fotoProducto2[i];
-					}
-					aProducto->precioProducto = precio;
-				//	aProducto->IDUser = userAccess->IDUser;
-					aProducto->nextProducto = NULL;
-					aProducto = oProducto;
+					insertarProductoEnLista(nuevoProducto);
 				}
 				saveProducto(aProducto);
-				aProducto = oProducto;
 				HWND hEnvios = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_ENVIOS), NULL, fEnvios);
 				ShowWindow(hEnvios, SW_SHOW);
 				exitProgramInfo = false;
