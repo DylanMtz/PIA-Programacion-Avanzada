@@ -1,0 +1,532 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Español (México) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESM)
+LANGUAGE LANG_SPANISH, SUBLANG_SPANISH_MEXICAN
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_LOGIN DIALOGEX 0, 0, 209, 243
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Iniciar sesión"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Bienvenido a la Tienda en Línea",LBL_WELCOME,54,20,101,8
+    LTEXT           "Nombre: ",LBL_NAME,21,49,30,8
+    EDITTEXT        TXT_NAME,21,60,159,24,ES_AUTOHSCROLL
+    LTEXT           "Contraseña: ",LBL_PASSWORD,20,98,109,8
+    EDITTEXT        TXT_PASSWORD,20,109,159,24,ES_PASSWORD | ES_AUTOHSCROLL
+    LTEXT           "¿Todavía no tienes una cuenta? ¡Regístrate gratis!",LBL_REGISTERFREE,20,193,168,8
+    PUSHBUTTON      "Registrarse",BTN_REGISTER,79,210,50,15
+    PUSHBUTTON      "Entrar",BTN_ENTER,70,148,68,24
+    PUSHBUTTON      "Salir",BTN_EXITLOGIN,163,225,39,11
+END
+
+IDD_REGISTER DIALOGEX 0, 0, 243, 366
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Registro de usuario"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Nombre de usuario (obligatorio):",LBL_NOMBRE,17,174,104,8
+    EDITTEXT        TXT_RNAME,17,185,104,21,ES_AUTOHSCROLL
+    LTEXT           "Contraseña (obligatorio):",LBL_CONTRASENA,17,218,82,8
+    EDITTEXT        TXT_RPASSWORD,17,229,104,21,ES_PASSWORD | ES_AUTOHSCROLL
+    PUSHBUTTON      "Registrarse",BTN_REGISTER2,174,333,62,26
+    PUSHBUTTON      "Regresar",BTN_RETURN,7,333,62,26
+    LTEXT           "Nombre (obligatorio):",LBL_NOMBRE2,17,18,69,8
+    EDITTEXT        TXT_RNAMEP,17,28,104,21,ES_AUTOHSCROLL
+    LTEXT           "Apellidos (obligatorio):",LBL_NOMBRE3,17,58,72,8
+    EDITTEXT        TXT_APELLIDOS,17,68,104,21,ES_AUTOHSCROLL
+    CONTROL         "",IDC_DTPR,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,17,110,100,15
+    LTEXT           "Fecha de nacimiento (obligatorio):",LBL_NOMBRE4,17,96,110,8
+    LTEXT           "Correo electrónico (obligatorio):",LBL_NOMBRE5,17,135,103,8
+    EDITTEXT        TXT_CORREO,17,145,192,21,ES_AUTOHSCROLL
+    LTEXT           "Confirmar contraseña (obligatorio):",LBL_CONFIRMARCONTRASENA,17,257,114,8
+    EDITTEXT        TXT_CONFIRMPASSWORD,17,268,104,21,ES_PASSWORD | ES_AUTOHSCROLL
+END
+
+IDD_INFOVENDEDOR DIALOGEX 0, 0, 277, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Información del vendedor"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Nombre completo del vendedor (obligatorio):",LBL_COMPLETENAME,14,18,144,8
+    EDITTEXT        TXT_COMPLETENAME,14,30,238,14,ES_AUTOHSCROLL
+    LTEXT           "Alias de la empresa (obligatorio):",LBL_ALIAS,14,52,106,8
+    EDITTEXT        TXT_ALIAS,14,65,238,14,ES_UPPERCASE | ES_AUTOHSCROLL
+    LTEXT           "Foto (obligatorio):",LBL_FOTO,14,100,59,8
+    PUSHBUTTON      "Cargar imagen",BTN_IMGIV,14,116,57,18
+    CONTROL         "",PB_FOTO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,123,90,91,69
+    PUSHBUTTON      "Confirmar",BTN_CONFIRMIV,211,147,50,14
+END
+
+IDD_ENVIOS DIALOGEX 0, 0, 309, 216
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Envíos"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Envíos:",IDC_STATIC,17,15,24,8
+    LISTBOX         IDC_LIST1,14,25,164,167,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Modificar datos",BTN_MODIFYENV,192,57,78,14
+    PUSHBUTTON      "Mostrar envíos",BTN_MOSTRARENVIO,192,90,78,14
+    PUSHBUTTON      "Eliminar",IDC_BUTTON4,192,124,78,14
+    PUSHBUTTON      "Nuevo envío",BTN_NUEVOENVIO,192,158,78,14
+END
+
+IDD_ALTA DIALOGEX 0, 0, 309, 188
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Alta de envío"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        CB_PRODUCTS,49,16,223,61,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Producto:",LBL_PRODUCT,15,17,32,8
+    LTEXT           "Cantidad:",LBL_CANTIDAD,15,36,32,8
+    EDITTEXT        TXT_CANTIDAD,49,34,31,14,ES_AUTOHSCROLL
+    LTEXT           "Calle:",LBL_ST,15,55,19,8
+    EDITTEXT        TXT_ST,47,51,223,14,ES_AUTOHSCROLL
+    LTEXT           "Colonia:",IDC_STATIC,15,74,27,8
+    EDITTEXT        TXT_COLONIA,49,71,224,14,ES_AUTOHSCROLL
+    LTEXT           "Ciudad:",IDC_STATIC,16,93,26,8
+    EDITTEXT        TXT_CIUDAD,50,91,223,14,ES_AUTOHSCROLL
+    LTEXT           "Estado:",IDC_STATIC,16,112,26,8
+    EDITTEXT        TXT_ESTADO,50,110,224,14,ES_AUTOHSCROLL
+    LTEXT           "Mensaje:",IDC_STATIC,16,132,30,8
+    EDITTEXT        TXT_MENSAJE,50,129,224,14,ES_AUTOHSCROLL
+    LTEXT           "Fecha de envío:",IDC_STATIC,15,152,52,8
+    PUSHBUTTON      "Confirmar",IDC_BUTTON6,252,159,50,14
+    CONTROL         "",DTP_FECHA,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,69,151,100,15
+    PUSHBUTTON      "Comprobar",BTN_CHECA,187,158,50,14
+    PUSHBUTTON      "Calcular precio ",BTN_CALCULARPRECIO,105,33,72,14
+    LTEXT           "Estático",LBL_PAGAR,192,36,74,10
+END
+
+IDD_PRODUCTOS DIALOGEX 0, 0, 439, 179
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Productos"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Nombre del producto:",LBL_NDP,15,18,70,8
+    EDITTEXT        TXT_NDP,89,16,104,14,ES_AUTOHSCROLL
+    LTEXT           "Cantidad en el inventario:",LBL_CEEI,14,42,84,8
+    EDITTEXT        TXT_CEEI,100,39,93,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Foto:",LBL_FOTOP,307,18,18,8
+    CONTROL         "",PB_FOTOP2,"Static",SS_BITMAP | SS_CENTERIMAGE,289,111,52,45
+    CONTROL         "",PB_FOTOP1,"Static",SS_BITMAP | SS_CENTERIMAGE,288,33,53,47
+    LTEXT           "Código del producto:",LBL_CDP,14,64,68,8
+    EDITTEXT        TXT_CDP,87,62,105,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Marca:",LBL_MARCA,15,88,23,8
+    EDITTEXT        TXT_MARCA,41,86,152,14,ES_AUTOHSCROLL
+    LTEXT           "Descripción:",LBL_DESCRIPCION,14,108,40,8
+    EDITTEXT        TXT_DESCRIPCION,55,106,138,38,ES_AUTOHSCROLL
+    PUSHBUTTON      "Cargar imagen",BTN_CARGARP1,211,49,56,14
+    PUSHBUTTON      "Cargar imagen",BTN_CARGARP2,209,124,56,14
+    PUSHBUTTON      "Confirmar",BTN_CONFIRMARPRODUCTO,382,151,50,14
+    LTEXT           "Precio:",LBL_PRECIO,27,153,23,8
+    EDITTEXT        TXT_PRECIO,55,150,50,14,ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "Mostrar",BTN_MOSTRARPRODUCTOS,382,128,50,14
+END
+
+IDD_RESUMENENVIO DIALOGEX 0, 0, 337, 308
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Resumen de envío"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Producto",LBL_PROD,180,24,32,8
+    LTEXT           "Cantidad",LBL_PROD2,181,44,32,8
+    LTEXT           "Precio",LBL_PROD3,182,64,32,8
+    LTEXT           "Calle:",LBL_ST,181,82,19,8
+    LTEXT           "Colonia:",IDC_STATIC,181,101,27,8
+    LTEXT           "Ciudad:",IDC_STATIC,182,120,26,8
+    LTEXT           "Estado:",IDC_STATIC,182,139,26,8
+    LTEXT           "Mensaje:",IDC_STATIC,182,159,30,8
+    LTEXT           "",LBL_PROD1,228,25,52,8
+    LTEXT           "",LBL_CANT1,219,47,52,8
+    LTEXT           "",LBL_PREC1,214,65,52,8
+    LTEXT           "",LBL_ST1,211,82,52,8
+    LTEXT           "",LBL_COL1,215,102,52,8
+    LTEXT           "",LBL_CIUDAD1,215,121,52,8
+    LTEXT           "",LBL_EDO1,213,141,52,8
+    LTEXT           "",LBL_MSJ1,217,159,52,8
+    LISTBOX         IDC_LIST11,15,14,146,243,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_MODIFY DIALOGEX 0, 0, 321, 203
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Modificar datos"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    COMBOBOX        IDC_COMBO1,49,16,223,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Producto:",IDC_STATIC,15,17,32,8
+    LTEXT           "Cantidad:",IDC_STATIC,15,36,32,8
+    EDITTEXT        IDC_EDIT1,49,34,31,14,ES_AUTOHSCROLL
+    LTEXT           "Monto:",IDC_STATIC,98,36,24,8
+    EDITTEXT        IDC_EDIT2,132,34,31,14,ES_AUTOHSCROLL
+    LTEXT           "Calle:",IDC_STATIC,15,55,19,8
+    EDITTEXT        IDC_EDIT3,49,53,223,14,ES_AUTOHSCROLL
+    LTEXT           "Colonia:",IDC_STATIC,15,74,27,8
+    EDITTEXT        IDC_EDIT4,49,71,224,14,ES_AUTOHSCROLL
+    LTEXT           "Ciudad:",IDC_STATIC,16,93,26,8
+    EDITTEXT        IDC_EDIT5,50,91,223,14,ES_AUTOHSCROLL
+    LTEXT           "Estado:",IDC_STATIC,16,112,26,8
+    EDITTEXT        IDC_EDIT6,50,110,224,14,ES_AUTOHSCROLL
+    LTEXT           "Mensaje:",IDC_STATIC,16,132,30,8
+    EDITTEXT        IDC_EDIT7,50,129,224,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_COMBO2,69,150,28,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Fecha de envío:",IDC_STATIC,15,152,52,8
+    COMBOBOX        IDC_COMBO3,105,150,28,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO4,141,150,28,30,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Confirmar",IDC_BUTTON6,264,167,50,14
+END
+
+IDD_MODAL DIALOGEX 0, 0, 215, 83
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Salir"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "¿Desea salir de la aplicación?",LBL_EXIT,15,16,92,8
+    PUSHBUTTON      "Salir",BTN_EXIT,97,54,50,14
+    PUSHBUTTON      "Cancelar",BTN_CANCEL,150,54,50,14
+END
+
+IDD_PRODUCTLIST DIALOGEX 0, 0, 571, 278
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Lista de Productos"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LISTBOX         IDC_LIST1,15,14,222,249,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Modificar producto",BTN_MODIFICAPRODUCTO,499,231,65,27
+    PUSHBUTTON      "Borrar producto",BTN_BORRARPRODUCTO,499,196,65,28
+    LTEXT           "Cantidad en el inventario:",LBL_CEEI,245,55,84,8
+    LTEXT           "Código del producto:",LBL_CDP,255,80,68,8
+    LTEXT           "Marca:",LBL_MARCA,275,127,23,8
+    LTEXT           "Descripción:",LBL_DESCRIPCION,267,150,40,8
+    LTEXT           "Precio:",LBL_PRECIO,278,100,23,8
+    LTEXT           "",LBL_CANT,331,54,220,14
+    LTEXT           "",LBL_COD,324,82,220,14
+    LTEXT           "",LBL_PREC,304,101,220,14
+    LTEXT           "",LBL_MARC,301,124,220,14
+    LTEXT           "",LBL_DESC,309,150,220,38
+    CONTROL         "",PB_SHOWFOTOP1,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,260,177,91,69
+    CONTROL         "",PB_SHOWFOTOP2,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE,379,178,91,69
+END
+
+IDD_MODIFYPROD DIALOGEX 0, 0, 449, 192
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Modificar producto"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Nombre del producto:",LBL_NDPM,11,26,70,8
+    EDITTEXT        TXT_NDPM,85,25,104,14,ES_AUTOHSCROLL
+    LTEXT           "Cantidad en el inventario:",LBL_CEEIM,9,50,84,8
+    EDITTEXT        TXT_CEEIM,95,47,93,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Foto:",LBL_FOTOPM,303,26,18,8
+    CONTROL         "",PB_FOTOP2M,"Static",SS_BITMAP | SS_CENTERIMAGE,285,119,52,45
+    CONTROL         "",PB_FOTOP1M,"Static",SS_BITMAP | SS_CENTERIMAGE,283,42,53,47
+    LTEXT           "Código del producto:",LBL_CDPM,9,73,68,8
+    EDITTEXT        TXT_CDPM,83,71,105,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Marca:",LBL_MARCAM,11,97,23,8
+    EDITTEXT        TXT_MARCAM,37,95,152,14,ES_AUTOHSCROLL
+    LTEXT           "Descripción:",LBL_DESCRIPCIONM,9,117,40,8
+    EDITTEXT        TXT_DESCRIPCIONM,51,114,138,38,ES_AUTOHSCROLL
+    PUSHBUTTON      "Cargar imagen",BTN_CARGARP1M,207,58,56,14
+    PUSHBUTTON      "Cargar imagen",BTN_CARGARP2M,205,133,56,14
+    PUSHBUTTON      "Confirmar",BTN_CONFIRMARCAMBIO,385,164,50,14
+    LTEXT           "Precio:",LBL_PRECIOM,23,162,23,8
+    EDITTEXT        TXT_PRECIOM,51,159,50,14,ES_AUTOHSCROLL | ES_NUMBER
+END
+
+IDD_DIALOG1 DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancelar",BTN_CANCELN,186,148,50,14
+    COMBOBOX        CB_PRODUCTSN,49,16,223,61,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Producto:",LBL_PRODUCT,15,17,32,8
+    LTEXT           "Cantidad:",LBL_CANTIDAD,15,36,32,8
+    EDITTEXT        TXT_CANTIDADN,49,34,31,14,ES_AUTOHSCROLL
+    LTEXT           "Calle:",LBL_ST,15,55,19,8
+    EDITTEXT        TXT_STN,49,53,223,14,ES_AUTOHSCROLL
+    LTEXT           "Colonia:",IDC_STATIC,15,74,27,8
+    EDITTEXT        TXT_COLONIAN,49,71,224,14,ES_AUTOHSCROLL
+    LTEXT           "Ciudad:",IDC_STATIC,16,93,26,8
+    EDITTEXT        TXT_CIUDADN,50,91,223,14,ES_AUTOHSCROLL
+    LTEXT           "Estado:",IDC_STATIC,16,112,26,8
+    EDITTEXT        TXT_ESTADON,50,110,224,14,ES_AUTOHSCROLL
+    LTEXT           "Mensaje:",IDC_STATIC,16,132,30,8
+    EDITTEXT        TXT_MENSAJEN,50,129,224,14,ES_AUTOHSCROLL
+    LTEXT           "Fecha de envío:",IDC_STATIC,15,152,52,8
+    CONTROL         "",DTP_FECHAN,"SysDateTimePick32",DTS_RIGHTALIGN | WS_TABSTOP,69,151,100,15
+    PUSHBUTTON      "Comprobar",BTN_CHECAN,245,148,50,14
+    LTEXT           "Estático",LBL_JK,191,36,29,10
+    PUSHBUTTON      "Calcular precio ",BTN_gr,108,34,72,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_LOGIN, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 202
+        VERTGUIDE, 104
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 236
+    END
+
+    IDD_REGISTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 236
+        VERTGUIDE, 17
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 359
+    END
+
+    IDD_INFOVENDEDOR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 270
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+
+    IDD_ENVIOS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        VERTGUIDE, 270
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 209
+    END
+
+    IDD_ALTA, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 181
+    END
+
+    IDD_PRODUCTOS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 432
+        VERTGUIDE, 223
+        VERTGUIDE, 254
+        VERTGUIDE, 341
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 172
+    END
+
+    IDD_RESUMENENVIO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 330
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 301
+    END
+
+    IDD_MODIFY, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 314
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 196
+    END
+
+    IDD_MODAL, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 208
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 76
+    END
+
+    IDD_PRODUCTLIST, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 564
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 271
+    END
+
+    IDD_MODIFYPROD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 442
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 185
+    END
+
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_LOGIN AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_REGISTER AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_INFOVENDEDOR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ENVIOS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ALTA AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PRODUCTOS AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_RESUMENENVIO AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MODIFY AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MODAL AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PRODUCTLIST AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_MODIFYPROD AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_DIALOG1 AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "Información del vendedor"
+    BEGIN
+        MENUITEM "Ver información del vendedor", ID_WATCHINFO
+    END
+    POPUP "Productos"
+    BEGIN
+        MENUITEM "Agregar Productos",           ID_PRODUCTOS_VER
+        MENUITEM "Eliminar Producto",           ID_PRODUCTOS_ELIMINARPRODUCTO
+        MENUITEM "Editar Producto",             ID_PRODUCTOS_EDITARPRODUCTO
+        MENUITEM "Mis Productos",               ID_PRODUCTOS_MISPRODUCTOS
+    END
+    POPUP "Envíos"
+    BEGIN
+        MENUITEM "Ver Envíos",                  ID_ENVIOS
+        MENUITEM "Nuevo envío",                 ID_ENV40031
+    END
+    POPUP "Salir"
+    BEGIN
+        MENUITEM "Salir de la aplicación",      ID_SALIR
+    END
+END
+
+#endif    // Español (México) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
