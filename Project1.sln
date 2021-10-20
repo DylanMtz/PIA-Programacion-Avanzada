@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31717.71
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Project1", "Project1\Project1.vcxproj", "{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PIA PA", "..\..\..\Downloads\PIA PA\PIA PA.vcxproj", "{B7AA8419-0CF8-4051-9A25-D30FC7297738}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PIA PA", "PIA PA.vcxproj", "{B7AA8419-0CF8-4051-9A25-D30FC7297738}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,14 +13,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Debug|x64.ActiveCfg = Debug|x64
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Debug|x64.Build.0 = Debug|x64
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Debug|x86.ActiveCfg = Debug|Win32
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Debug|x86.Build.0 = Debug|Win32
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Release|x64.ActiveCfg = Release|x64
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Release|x64.Build.0 = Release|x64
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Release|x86.ActiveCfg = Release|Win32
-		{EB434E45-80BE-4B98-AB4A-1D0B9362A52E}.Release|x86.Build.0 = Release|Win32
 		{B7AA8419-0CF8-4051-9A25-D30FC7297738}.Debug|x64.ActiveCfg = Debug|x64
 		{B7AA8419-0CF8-4051-9A25-D30FC7297738}.Debug|x64.Build.0 = Debug|x64
 		{B7AA8419-0CF8-4051-9A25-D30FC7297738}.Debug|x86.ActiveCfg = Debug|Win32
