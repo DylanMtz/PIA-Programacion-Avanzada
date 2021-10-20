@@ -9,12 +9,28 @@ using namespace std;
 struct productos {
 	int IDProducto;
 	int IDUser;
-	string nombreProducto, cantidadProducto, codigoProducto, marcaProducto, precioProducto;
+	string nombreProducto, cantidadProducto, codigoProducto, marcaProducto, 
+		precioProducto;
 	char descripcionProducto[MAX_PATH] = "";
 	char fotoP1[MAX_PATH] = "";
 	char fotoP2[MAX_PATH] = "";
 	productos* nextProducto;
 	productos* prevProducto;
+
+	bool tieneDatosValidos()
+	{
+		if (nombreProducto.compare("") == 0 ||
+			cantidadProducto.compare("") == 0 ||
+			codigoProducto.compare("") == 0 ||
+			marcaProducto.compare("") == 0 ||
+			strlen(descripcionProducto) == 0 ||
+			strlen(fotoP1) == 0 ||
+			strlen(fotoP2) == 0 ||
+			precioProducto.compare("") == 0) {
+			return false;
+		}
+		return true;
+	}
 }*oProducto, * aProducto;
 
 char fotoProducto1[MAX_PATH] = "";
