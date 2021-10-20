@@ -111,8 +111,7 @@ HWND hTxtChangeProdPrecio;
 HWND hTxtChangeProdDescripcion;
 
 char fotoVendedor[MAX_PATH] = "";
-char fotoProducto1[MAX_PATH] = "";
-char fotoProducto2[MAX_PATH] = "";
+
 char fotoProducto1Nueva[MAX_PATH] = "";
 char fotoProducto2Nueva[MAX_PATH] = "";
 char desc[MAX_PATH] = "";
@@ -735,23 +734,18 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			}
 
 			if (nombreDelProducto.compare("") == 1 && cantidadEnInventario.compare("") == 1 && codigoDelProducto.compare("") == 1 && descripcionDelProducto.compare("") == 1 && marcaDelProducto.compare("") == 1 && foto1.compare("")==1 && foto2.compare("") == 1 && precio.compare("")==1) {
+
+				productos* nuevoProducto = crearProducto(
+					nombreDelProducto,
+					cantidadEnInventario,
+					codigoDelProducto,
+					marcaDelProducto,
+					descripcionDelProducto,
+					precio
+				);
+
 				if (oProducto == NULL) {
-					oProducto = new productos;
-					oProducto->nombreProducto = nombreDelProducto;
-					oProducto->cantidadProducto = cantidadEnInventario;
-					oProducto->codigoProducto = codigoDelProducto;
-					oProducto->marcaProducto = marcaDelProducto;
-					for (int i = 0; i < MAX_PATH; i++) {
-						oProducto->descripcionProducto[i] = desc[i];
-						oProducto->fotoP1[i] = fotoProducto1[i];
-						oProducto->fotoP2[i] = fotoProducto2[i];
-					}
-					oProducto->precioProducto = precio;
-					oProducto->IDProducto = 0;
-			//		oProducto->IDUser = userAccess->IDUser;
-					oProducto->nextProducto = NULL;
-					oProducto->prevProducto = NULL;
-					aProducto = oProducto;
+					oProducto = aProducto = nuevoProducto;
 				}
 				else {
 					while (aProducto->nextProducto != NULL) {
