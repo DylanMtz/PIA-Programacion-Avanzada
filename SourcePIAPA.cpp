@@ -2075,23 +2075,7 @@ void getGlobalId() {
 	}
 }
 
-void saveProducto(productos* pOrigen) {
-	lectorEscritor.open("Productos.bin", ios::out | ios::trunc | ios::binary);
-	if (lectorEscritor.is_open()) {
-		pOrigen = oProducto;
-		while (pOrigen != NULL) {
-			lectorEscritor.write(reinterpret_cast<char*>(pOrigen), sizeof(productos));
-			pOrigen = pOrigen->nextProducto;
-		}
-		lectorEscritor.close();
-		MessageBox(NULL, "La lista de productos se ha actualizado exitosamente", "GUARDAR", MB_ICONASTERISK);
-		return;
-	}
-	else {
-		MessageBox(NULL, "No se pudo abrir el archivo", "NO GUARDAR", MB_ICONASTERISK);
-		return;
-	}
-}
+
 
 void loadEnvios() {
 	lectorEscritor.open("Envios.bin", ios::binary | ios::in | ios::ate);
