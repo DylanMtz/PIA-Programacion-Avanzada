@@ -608,7 +608,7 @@ BOOL CALLBACK fInfoVendedor(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 					} while (aInfoVendedor!=NULL);
 
 					aInfoVendedor = oInfoVendedor;
-					if (existeVendedor==false) {
+					if (!existeVendedor) {
 						while (aInfoVendedor->nextInfoVendedor != NULL) {
 							aInfoVendedor = aInfoVendedor->nextInfoVendedor;
 						}

@@ -66,9 +66,13 @@
 #define IDC_EDIT2                       1024
 #define IDC_EDIT3                       1025
 #define PB_SHOWFOTOP2                   1025
+#define TXT_ENVCALLEM                   1025
 #define IDC_EDIT4                       1026
+#define TXT_ENVCOLM                     1026
 #define IDC_EDIT5                       1027
+#define TXT_ENVCIUM                     1027
 #define IDC_EDIT6                       1028
+#define TXT_ENVESTM                     1028
 #define IDC_EDIT7                       1029
 #define IDC_COMBO2                      1030
 #define IDC_COMBO3                      1031
@@ -160,7 +164,13 @@
 #define LBL_CIUDAD1                     1121
 #define LBL_EDO1                        1122
 #define LBL_MSJ1                        1123
-#define LB_ENVIOSDELETE                 1124
+#define LBL_ENVPROD                     1125
+#define LBL_ENVCANT                     1126
+#define LB_ENVIOSDELETEMODIFY           1127
+#define LBL_ENVMONTO                    1128
+#define LBL_ENVMSJM                     1129
+#define LBL_ENVFECHAM                   1130
+#define BTN_CONFENVM                    1131
 #define ID_WATCHINFO                    40014
 #define ID_PRODUCTOS_VER                40020
 #define ID_SALIR                        40021
@@ -179,7 +189,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40032
-#define _APS_NEXT_CONTROL_VALUE         1125
+#define _APS_NEXT_CONTROL_VALUE         1132
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
