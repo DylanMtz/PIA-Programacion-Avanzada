@@ -134,6 +134,7 @@ char fotoProducto1Nueva[MAX_PATH] = "";
 char fotoProducto2Nueva[MAX_PATH] = "";
 char desc[MAX_PATH] = "";
 int GLOBAL_USER_ID = 1;
+int GLOBAL_PRODUCTO_ID = 1;
 int GLOBAL_ENVIO_ID = 1;
 
 void freeMemoryUser();
@@ -605,10 +606,10 @@ BOOL CALLBACK fInfoVendedor(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 						else {
 							aInfoVendedor = aInfoVendedor->nextInfoVendedor;
 						}
-					} while (aInfoVendedor!=NULL);
+					} while (aInfoVendedor != NULL);
 
 					aInfoVendedor = oInfoVendedor;
-					if (existeVendedor==false) {
+					if (existeVendedor == false) {
 						while (aInfoVendedor->nextInfoVendedor != NULL) {
 							aInfoVendedor = aInfoVendedor->nextInfoVendedor;
 						}
@@ -796,27 +797,29 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 				break;
 			}
 
-			if (oProducto != NULL) {
-				bool found = true;
-				while (aProducto->nombreProducto.compare(nombreDelProducto) != 0) {
-					if (aProducto->nextProducto == NULL) {
-						found = false;
+			/*	if (oProducto != NULL) {
+					bool found = true;
+					while (aProducto->nombreProducto.compare(nombreDelProducto) != 0) {
+						if (aProducto->nextProducto == NULL && aProducto->IDUser == userAccess->IDUser) {
+							found = false;
+							break;
+						}
+						aProducto = aProducto->nextProducto;
+					}
+					if (found == true) {
+						MessageBox(NULL, "Ya hay un producto con ese nombre", "NO ALTA", MB_ICONASTERISK);
+						aProducto = oProducto;
 						break;
 					}
-					aProducto = aProducto->nextProducto;
-				}
-				if (found == true) {
-					MessageBox(NULL, "Ya hay un producto con ese nombre", "NO ALTA", MB_ICONASTERISK);
-					aProducto = oProducto;
-					break;
-				}
-				else
-					aProducto = oProducto;
-			}
+					else
+						aProducto = oProducto;
+				}*/
+
 
 			if (nombreDelProducto.compare("") == 1 && cantidadEnInventario.compare("") == 1 && codigoDelProducto.compare("") == 1 && descripcionDelProducto.compare("") == 1 && marcaDelProducto.compare("") == 1 && foto1.compare("") == 1 && foto2.compare("") == 1 && precio.compare("") == 1) {
 				if (oProducto == NULL) {
 					oProducto = new productos;
+					oProducto->IDProducto = GLOBAL_PRODUCTO_ID++;
 					oProducto->nombreProducto = nombreDelProducto;
 					oProducto->cantidadProducto = cantidadEnInventario;
 					oProducto->codigoProducto = codigoDelProducto;
@@ -827,33 +830,52 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 						oProducto->fotoP2[i] = fotoProducto2[i];
 					}
 					oProducto->precioProducto = precio;
-					oProducto->IDProducto = 0;
-					//		oProducto->IDUser = userAccess->IDUser;
+					oProducto->IDUser = userAccess->IDUser;
 					oProducto->nextProducto = NULL;
 					oProducto->prevProducto = NULL;
 					aProducto = oProducto;
 				}
 				else {
-					while (aProducto->nextProducto != NULL) {
-						aProducto = aProducto->nextProducto;
-					}
-					aProducto->nextProducto = new productos;
-					aProducto->nextProducto->prevProducto = aProducto;
-					aProducto = aProducto->nextProducto;
-					aProducto->nombreProducto = nombreDelProducto;
-					aProducto->cantidadProducto = cantidadEnInventario;
-					aProducto->codigoProducto = codigoDelProducto;
-					aProducto->marcaProducto = marcaDelProducto;
-					aProducto->IDProducto = aProducto->prevProducto->IDProducto + 1;
-					for (int i = 0; i < MAX_PATH; i++) {
-						aProducto->descripcionProducto[i] = desc[i];
-						aProducto->fotoP1[i] = fotoProducto1[i];
-						aProducto->fotoP2[i] = fotoProducto2[i];
-					}
-					aProducto->precioProducto = precio;
-					//	aProducto->IDUser = userAccess->IDUser;
-					aProducto->nextProducto = NULL;
+					int productosDuplicados = 0;
 					aProducto = oProducto;
+					do {
+						if (nombreDelProducto == aProducto->nombreProducto && aProducto->IDUser == userAccess->IDUser) {
+							productosDuplicados++;
+						}
+						//if (aProducto->nextProducto!=NULL) {
+						aProducto = aProducto->nextProducto;
+						//}
+					} while (aProducto != NULL);
+
+					if (productosDuplicados >= 1) {
+						MessageBox(NULL, "Usted ya tiene registrado un producto con ese nombre", "NO ALTA", MB_ICONASTERISK);
+						break;
+					}
+
+					else {
+						aProducto = oProducto;
+						while (aProducto->nextProducto != NULL) {
+							aProducto = aProducto->nextProducto;
+						}
+						aProducto->nextProducto = new productos;
+						aProducto->IDProducto = GLOBAL_PRODUCTO_ID++;
+						aProducto->nextProducto->prevProducto = aProducto;
+						aProducto = aProducto->nextProducto;
+						aProducto->nombreProducto = nombreDelProducto;
+						aProducto->cantidadProducto = cantidadEnInventario;
+						aProducto->codigoProducto = codigoDelProducto;
+						aProducto->marcaProducto = marcaDelProducto;
+						//aProducto->IDProducto = aProducto->prevProducto->IDProducto + 1;
+						for (int i = 0; i < MAX_PATH; i++) {
+							aProducto->descripcionProducto[i] = desc[i];
+							aProducto->fotoP1[i] = fotoProducto1[i];
+							aProducto->fotoP2[i] = fotoProducto2[i];
+						}
+						aProducto->precioProducto = precio;
+						aProducto->IDUser = userAccess->IDUser;
+						aProducto->nextProducto = NULL;
+						aProducto = oProducto;
+					}
 				}
 				aProducto = oProducto;
 				saveProducto(aProducto);
@@ -980,6 +1002,12 @@ BOOL CALLBACK fMostrarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 			}
 		}break;
 		case BTN_BORRARPRODUCTO: {
+
+			if (aProducto->IDUser != userAccess->IDUser) {
+				MessageBox(NULL, "No puedes borrar un producto que no es tuyo", "ATENCION", MB_OK);
+				break;
+			}
+
 			SendDlgItemMessage(hwnd, LBL_CANT, WM_SETTEXT, NULL, (LPARAM)"");
 			SendDlgItemMessage(hwnd, LBL_COD, WM_SETTEXT, NULL, (LPARAM)"");
 			SendDlgItemMessage(hwnd, LBL_PREC, WM_SETTEXT, NULL, (LPARAM)"");
@@ -994,6 +1022,7 @@ BOOL CALLBACK fMostrarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 				MessageBox(NULL, "No hay productos en la lista", "SIN PRODUCTOS", MB_OK);
 				break;
 			}
+
 			if (aProducto->nextProducto == NULL && aProducto->prevProducto == NULL) {
 				delete aProducto;
 				SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
@@ -1093,6 +1122,12 @@ BOOL CALLBACK fMostrarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 				SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
 				aProducto = oProducto;
 			}*/
+
+			if (aProducto->IDUser != userAccess->IDUser) {
+				MessageBox(NULL, "No puedes editar un producto que no es tuyo", "ATENCION", MB_OK);
+				break;
+			}
+
 			HWND hModificaProductos = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_MODIFYPROD), NULL, fModificarProductos);
 			ShowWindow(hModificaProductos, SW_SHOW);
 			exitProgramModificaP = false;
@@ -1173,7 +1208,26 @@ BOOL CALLBACK fModificarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 	case WM_COMMAND: {
 		switch (LOWORD(wparam)) {
 		case BTN_CONFIRMARCAMBIO: {
-			aProducto->nombreProducto = getText(hTxtChangeProdNombre);
+			
+			string nombreDelProducto=getText(hTxtChangeProdNombre);
+			int productosDuplicados = 0;
+			productos* auxProducto = aProducto;
+			aProducto = oProducto;
+			do {
+				if (nombreDelProducto == aProducto->nombreProducto && aProducto->IDUser == userAccess->IDUser) {
+					productosDuplicados++;
+				}
+				//if (aProducto->nextProducto!=NULL) {
+				aProducto = aProducto->nextProducto;
+				//}
+			} while (aProducto != NULL);
+
+			if (productosDuplicados >= 1) {
+				MessageBox(NULL, "Usted ya tiene registrado un producto con ese nombre", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}
+			aProducto = auxProducto;
+			aProducto->nombreProducto = nombreDelProducto;
 			aProducto->cantidadProducto = getText(hTxtChangeProdCantidad);
 			aProducto->codigoProducto = getText(hTxtChangeProdCodigo);
 			aProducto->marcaProducto = getText(hTxtChangeProdMarca);
@@ -1792,7 +1846,15 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 				break;
 			}
 
-			if (cantidadEnvio.compare("") == 1 || calle.compare("") == 1 || colonia.compare("") == 1 || ciudad.compare("") == 1 || estado.compare("") == 1 || mensaje.compare("") == 1) {
+			int productosActuales = atoi(aProducto->cantidadProducto.c_str());
+			int productosAEnviar = atoi(cantidadEnvio.c_str());
+			int productosRestantes = productosActuales - productosAEnviar;
+
+			if (productosActuales<productosAEnviar) {
+				MessageBox(NULL, "No cuenta con los suficientes productos en el inventario", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}
+			else {
 				if (oEnvios == NULL) {
 					oEnvios = new Envios;
 					oEnvios->productoAEnviarID = aProducto->IDProducto;
@@ -1807,10 +1869,11 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 					oEnvios->estado = estado;
 					oEnvios->mensaje = mensaje;
 					oEnvios->fecha = ltm;
-					//oProducto->IDUser = userAccess->IDUser;
+					oEnvios->IDUser = userAccess->IDUser;
 					oEnvios->nextEnvio = NULL;
 					oEnvios->prevEnvio = NULL;
 					aEnvios = oEnvios;
+					aProducto->cantidadProducto = to_string(productosRestantes);
 				}
 				else {
 					aEnvios = oEnvios;
@@ -1832,10 +1895,12 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 					aEnvios->estado = estado;
 					aEnvios->mensaje = mensaje;
 					aEnvios->fecha = ltm;
-					//	aProducto->IDUser = userAccess->IDUser;
+					aEnvios->IDUser = userAccess->IDUser;
 					aEnvios->nextEnvio = NULL;
 					aEnvios = oEnvios;
+					aProducto->cantidadProducto = to_string(productosRestantes);
 				}
+				saveProducto(aProducto);
 				saveEnvios(aEnvios);
 				aEnvios = oEnvios;
 				HWND hEnvios = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_ENVIOS), NULL, fEnvios);
@@ -2354,7 +2419,7 @@ void loadEnvios() {
 		}
 		for (int i = 0; i < totalCharactersUsers / sizeof(Envios); i++) {
 			GLOBAL_ENVIO_ID++;
-			if (oProducto == NULL) {
+			if (oEnvios == NULL) {
 				Envios* temp = new Envios;
 				oEnvios = new Envios;
 				lectorEscritor.seekg(i * sizeof(Envios));
@@ -2370,6 +2435,8 @@ void loadEnvios() {
 				oEnvios->estado = temp->estado;
 				oEnvios->mensaje = temp->mensaje;
 				oEnvios->fecha = temp->fecha;
+				GLOBAL_ENVIO_ID = oEnvios->IDEnvio + 1;
+				oEnvios->IDUser = temp->IDUser;
 				oEnvios->nextEnvio = NULL;
 				oEnvios->prevEnvio = NULL;
 				aEnvios = oEnvios;
@@ -2389,6 +2456,8 @@ void loadEnvios() {
 				aEnvios->productoAEnviarID = temp->productoAEnviarID;
 				aEnvios->productoAEnviar = temp->productoAEnviar;
 				aEnvios->IDEnvio = temp->IDEnvio;
+				GLOBAL_ENVIO_ID = aEnvios->IDEnvio + 1;
+				aEnvios->IDUser = temp->IDUser;
 				aEnvios->cantidad = temp->cantidad;
 				aEnvios->precio = temp->precio;
 				aEnvios->calle = temp->calle;
@@ -2436,6 +2505,8 @@ void loadProducto() {
 				oProducto->marcaProducto = temp->marcaProducto;
 				oProducto->precioProducto = temp->precioProducto;
 				oProducto->IDProducto = temp->IDProducto;
+				GLOBAL_PRODUCTO_ID = oProducto->IDProducto + 1;
+				oProducto->IDUser = temp->IDUser;
 				for (int i = 0; i < MAX_PATH; i++) {
 					oProducto->descripcionProducto[i] = temp->descripcionProducto[i];
 				}
@@ -2467,6 +2538,8 @@ void loadProducto() {
 				aProducto->marcaProducto = temp->marcaProducto;
 				aProducto->precioProducto = temp->precioProducto;
 				aProducto->IDProducto = temp->IDProducto;
+				GLOBAL_PRODUCTO_ID = aProducto->IDProducto + 1;
+				aProducto->IDUser = temp->IDUser;
 				for (int i = 0; i < MAX_PATH; i++) {
 					aProducto->descripcionProducto[i] = temp->descripcionProducto[i];
 				}
