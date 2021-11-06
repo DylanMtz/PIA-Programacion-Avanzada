@@ -153,7 +153,7 @@ void getGlobalId(); //GlobalId.txt obtener 1 registro del numero a guardar
 void saveGlobalId();//GlobalId.txt guardar el numero en el archivo binario
 string getText(HWND);
 void actualizarProducto(HWND hwnd);
-
+void eliminarProducto();
 
 BOOL CALLBACK fLogin(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK fRegister(HWND, UINT, WPARAM, LPARAM);
@@ -208,6 +208,7 @@ bool validarContrasena(string contrasena) {
 	}
 }
 
+int contadorEnvios = 1;
 
 int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR cmdLine, int cShow) {
 	getGlobalId();
@@ -931,8 +932,10 @@ BOOL CALLBACK fMostrarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 		aProducto = oProducto;
 
 		while (aProducto != NULL) {
-			int indexProducto = SendMessage(hLbProductos, LB_ADDSTRING, 0, (LPARAM)aProducto->nombreProducto.c_str());
-			SendMessage(hLbProductos, LB_SETITEMDATA, indexProducto, aProducto->IDProducto);
+			if (aProducto->IDUser == userAccess->IDUser) {
+				int indexProducto = SendMessage(hLbProductos, LB_ADDSTRING, 0, (LPARAM)aProducto->nombreProducto.c_str());
+				SendMessage(hLbProductos, LB_SETITEMDATA, indexProducto, aProducto->IDProducto);
+			}
 			aProducto = aProducto->nextProducto;
 		}aProducto = oProducto;
 
@@ -1023,67 +1026,12 @@ BOOL CALLBACK fMostrarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 				break;
 			}
 
-			if (aProducto->nextProducto == NULL && aProducto->prevProducto == NULL) {
-				delete aProducto;
-				SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
-				HWND hPbFotoInfo2 = GetDlgItem(hwnd, PB_FOTOP2);
-				HWND hPbFotoInfo1 = GetDlgItem(hwnd, PB_FOTOP1);
-				SendMessage(hPbFotoInfo2, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				SendMessage(hPbFotoInfo1, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				/*ShowWindow(GetDlgItem(hwnd, LBL_CANT), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_COD), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_PREC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_MARC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_DESC), SW_HIDE);*/
-				oProducto = aProducto = NULL;
-			}
-			else if (aProducto->nextProducto == NULL) {
-				aProducto->prevProducto->nextProducto = NULL;
-				delete aProducto;
-				SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
-				HWND hPbFotoInfo2 = GetDlgItem(hwnd, PB_FOTOP2);
-				HWND hPbFotoInfo1 = GetDlgItem(hwnd, PB_FOTOP1);
-				SendMessage(hPbFotoInfo2, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				SendMessage(hPbFotoInfo1, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				/*ShowWindow(GetDlgItem(hwnd, LBL_CANT), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_COD), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_PREC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_MARC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_DESC), SW_HIDE);*/
-				aProducto = oProducto;
-			}
-			else if (aProducto->prevProducto == NULL) {
-				oProducto = oProducto->nextProducto;
-				oProducto->prevProducto = NULL;
-				delete aProducto;
-				SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
-				HWND hPbFotoInfo2 = GetDlgItem(hwnd, PB_FOTOP2);
-				HWND hPbFotoInfo1 = GetDlgItem(hwnd, PB_FOTOP1);
-				SendMessage(hPbFotoInfo2, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				SendMessage(hPbFotoInfo1, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				/*ShowWindow(GetDlgItem(hwnd, LBL_CANT), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_COD), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_PREC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_MARC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_DESC), SW_HIDE);*/
-				aProducto = oProducto;
-			}
-			else {
-				aProducto->prevProducto->nextProducto = aProducto->nextProducto;
-				aProducto->nextProducto->prevProducto = aProducto->prevProducto;
-				delete aProducto;
-				SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
-				HWND hPbFotoInfo2 = GetDlgItem(hwnd, PB_FOTOP2);
-				HWND hPbFotoInfo1 = GetDlgItem(hwnd, PB_FOTOP1);
-				SendMessage(hPbFotoInfo2, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				SendMessage(hPbFotoInfo1, STM_SETIMAGE, IMAGE_BITMAP, NULL);
-				/*ShowWindow(GetDlgItem(hwnd, LBL_CANT), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_COD), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_PREC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_MARC), SW_HIDE);
-				ShowWindow(GetDlgItem(hwnd, LBL_DESC), SW_HIDE);*/
-				aProducto = oProducto;
-			}
+			eliminarProducto();
+			SendMessage(hLbProductos, LB_DELETESTRING, (WPARAM)selIndex, 0);
+			HWND hPbFotoInfo2 = GetDlgItem(hwnd, PB_FOTOP2);
+			HWND hPbFotoInfo1 = GetDlgItem(hwnd, PB_FOTOP1);
+			SendMessage(hPbFotoInfo2, STM_SETIMAGE, IMAGE_BITMAP, NULL);
+			SendMessage(hPbFotoInfo1, STM_SETIMAGE, IMAGE_BITMAP, NULL);
 			saveProducto(aProducto);
 
 		}break;
@@ -1208,8 +1156,8 @@ BOOL CALLBACK fModificarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpa
 	case WM_COMMAND: {
 		switch (LOWORD(wparam)) {
 		case BTN_CONFIRMARCAMBIO: {
-			
-			string nombreDelProducto=getText(hTxtChangeProdNombre);
+
+			string nombreDelProducto = getText(hTxtChangeProdNombre);
 			int productosDuplicados = 0;
 			productos* auxProducto = aProducto;
 			aProducto = oProducto;
@@ -1344,15 +1292,17 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 		aEnvios = oEnvios;
 
-		int contador = 1;
+
 		while (aEnvios != NULL) {
-			string nombreEnvio;
-			nombreEnvio.append("Envio #");
-			nombreEnvio.append(to_string(contador));
-			int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
-			SendMessage(hLbEnviosResumen, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
+			if (aEnvios->IDUser == userAccess->IDUser) {
+				string nombreEnvio;
+				nombreEnvio.append("Envio #");
+				nombreEnvio.append(to_string(contadorEnvios));
+				int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
+				SendMessage(hLbEnviosResumen, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
+				contadorEnvios++;
+			}
 			aEnvios = aEnvios->nextEnvio;
-			contador++;
 		}aEnvios = oEnvios;
 
 	}break;
@@ -1383,6 +1333,11 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 			}
 		}break;
 		case BTN_DELETEENV: {
+
+			if (contadorEnvios == 1) {
+				MessageBox(NULL, "No hay ningun envio para borrar", "Menu", MB_ICONQUESTION);
+				break;
+			}
 
 			if (aEnvios == NULL) {
 				break;
@@ -1427,19 +1382,30 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 		}break;
 		case BTN_MODIFYENV: {
-
+			if (contadorEnvios == 1) {
+				MessageBox(NULL, "No hay ningun envio para modificar", "Menu", MB_ICONQUESTION);
+				break;
+			}
+			contadorEnvios = 1;
 			HWND hModEnv = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_MODIFY), NULL, fModify);
 			ShowWindow(hModEnv, SW_SHOW);
 			exitProgramModify = false;
 			DestroyWindow(hwnd);
 		}break;
 		case BTN_MOSTRARENVIO: {
+
+			if (contadorEnvios == 1) {
+				MessageBox(NULL, "No hay ningun envio para mostrar", "Menu", MB_ICONQUESTION);
+				break;
+			}
+			contadorEnvios = 1;
 			HWND hResEnv = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_RESUMENENVIO), NULL, fResumenEnvio);
 			ShowWindow(hResEnv, SW_SHOW);
 			exitProgramResumen = false;
 			DestroyWindow(hwnd);
 		}break;
 		case BTN_NUEVOENVIO: {
+			contadorEnvios = 1;
 			/*HWND hResEnv = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_RESUMENENVIO), NULL, fResumenEnvio);
 			ShowWindow(hResEnv, SW_SHOW);
 			exitProgramResumen = false;
@@ -1458,12 +1424,14 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		}break;
 		case ID_ENVIOS: MessageBox(NULL, "Usted ya se encuentra en esta ventana", "Menu", MB_ICONQUESTION); break;
 		case ID_PRODUCTOS_VER: {
+			contadorEnvios = 1;
 			HWND hProducts = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_PRODUCTOS), NULL, fProductos);
 			ShowWindow(hProducts, SW_SHOW);
 			exitProgramInfo = false;
 			DestroyWindow(hwnd);
 		}break;
 		case ID_WATCHINFO: {
+			contadorEnvios = 1;
 			HWND hInfo = CreateDialog(hGInstance, MAKEINTRESOURCE(IDD_INFOVENDEDOR), NULL, fInfoVendedor);
 			ShowWindow(hInfo, SW_SHOW);
 			exitProgramInfo = false;
@@ -1472,15 +1440,18 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		}
 	}break;
 	case WM_CLOSE:
+		contadorEnvios = 1;
 		exitProgramEnvios = true;
 		DestroyWindow(hwnd);
 		break;
 	case WM_DESTROY:
+		contadorEnvios = 1;
 		if (exitProgramEnvios) {
 			PostQuitMessage(117);
 		}
 		break;
 	}
+
 	return FALSE;
 }
 
@@ -1499,13 +1470,15 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 		int contador = 1;
 		while (aEnvios != NULL) {
-			string nombreEnvio;
-			nombreEnvio.append("Envio #");
-			nombreEnvio.append(to_string(contador));
-			int indexEnvio = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
-			SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
+			if (aEnvios->IDUser == userAccess->IDUser) {
+				string nombreEnvio;
+				nombreEnvio.append("Envio #");
+				nombreEnvio.append(to_string(contador));
+				int indexEnvio = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
+				SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
+				contador++;
+			}
 			aEnvios = aEnvios->nextEnvio;
-			contador++;
 		}aEnvios = oEnvios;
 
 	}break;
@@ -1619,8 +1592,11 @@ BOOL CALLBACK fModify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		SetWindowText(hTxtChangeEnvioMensaje, aEnvios->mensaje.c_str());
 		char buffer[256];
 		//aEnvios->fecha->tm_mon--;
-		strftime(buffer, sizeof(buffer), "%d-%m-20%y", aEnvios->fecha);
-		SetWindowText(hTxtChangeEnvioFecha, buffer);
+		try {
+			//strftime(buffer, sizeof(buffer), "%d-%m-20%y", aEnvios->fecha);
+			//SetWindowText(hTxtChangeEnvioFecha, buffer);
+		}
+		catch (exception ex) {}
 	}break;
 	case WM_COMMAND: {
 		switch (LOWORD(wparam)) {
@@ -1695,7 +1671,9 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 		aProducto = oProducto;
 
 		while (aProducto != NULL) {
-			SendMessage(hCbProductos, CB_ADDSTRING, 100, (LPARAM)aProducto->nombreProducto.c_str());
+			if (aProducto->IDUser == userAccess->IDUser) {
+				SendMessage(hCbProductos, CB_ADDSTRING, 100, (LPARAM)aProducto->nombreProducto.c_str());
+			}
 			aProducto = aProducto->nextProducto;
 		}
 	}break;
@@ -1850,7 +1828,7 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 			int productosAEnviar = atoi(cantidadEnvio.c_str());
 			int productosRestantes = productosActuales - productosAEnviar;
 
-			if (productosActuales<productosAEnviar) {
+			if (productosActuales < productosAEnviar) {
 				MessageBox(NULL, "No cuenta con los suficientes productos en el inventario", "NO ALTA", MB_ICONASTERISK);
 				break;
 			}
@@ -1897,8 +1875,11 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 					aEnvios->fecha = ltm;
 					aEnvios->IDUser = userAccess->IDUser;
 					aEnvios->nextEnvio = NULL;
-					aEnvios = oEnvios;
+				//	aEnvios = oEnvios;
 					aProducto->cantidadProducto = to_string(productosRestantes);
+				}
+				if (aProducto->cantidadProducto == "0") {
+					eliminarProducto();
 				}
 				saveProducto(aProducto);
 				saveEnvios(aEnvios);
@@ -2156,6 +2137,7 @@ string getText(HWND hwnd) {
 }
 
 void save(User* pOrigen) {
+	pOrigen = oUser;
 	lectorEscritor.open("Usuario.bin", ios::out | ios::trunc | ios::binary);
 	if (lectorEscritor.is_open()) {
 		while (pOrigen != NULL) {
@@ -2173,6 +2155,7 @@ void save(User* pOrigen) {
 }
 
 void saveEnvios(Envios* pOrigen) {
+	pOrigen = oEnvios;
 	lectorEscritor.open("Envios.bin", ios::out | ios::trunc | ios::binary);
 	if (lectorEscritor.is_open()) {
 		while (pOrigen != NULL) {
@@ -2190,6 +2173,7 @@ void saveEnvios(Envios* pOrigen) {
 }
 
 void saveInfoVendedor(InfoVendedor* pOrigen) {
+	pOrigen = oInfoVendedor;
 	lectorEscritor.open("Informacion del Vendedor.bin", ios::out | ios::trunc | ios::binary);
 	if (lectorEscritor.is_open()) {
 		while (pOrigen != NULL) {
@@ -2391,6 +2375,7 @@ void getGlobalId() {
 }
 
 void saveProducto(productos* pOrigen) {
+	pOrigen = oProducto;
 	lectorEscritor.open("Productos.bin", ios::out | ios::trunc | ios::binary);
 	if (lectorEscritor.is_open()) {
 		pOrigen = oProducto;
@@ -2581,3 +2566,26 @@ void saveGlobalId() {
 	}
 }
 
+void eliminarProducto() {
+	if (aProducto->nextProducto == NULL && aProducto->prevProducto == NULL) {
+		delete aProducto;
+		oProducto = aProducto = NULL;
+	}
+	else if (aProducto->nextProducto == NULL) {
+		aProducto->prevProducto->nextProducto = NULL;
+		delete aProducto;
+		aProducto = oProducto;
+	}
+	else if (aProducto->prevProducto == NULL) {
+		oProducto = oProducto->nextProducto;
+		oProducto->prevProducto = NULL;
+		delete aProducto;
+		aProducto = oProducto;
+	}
+	else {
+		aProducto->prevProducto->nextProducto = aProducto->nextProducto;
+		aProducto->nextProducto->prevProducto = aProducto->prevProducto;
+		delete aProducto;
+		aProducto = oProducto;
+	}
+}
