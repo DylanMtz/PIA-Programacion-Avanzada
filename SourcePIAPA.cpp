@@ -57,6 +57,8 @@ productos* buscadorDeProductos(int IP) {
 
 struct Envios {
 	tm* fecha;
+	string fechastr;
+	string status;
 	int IDEnvio;
 	int IDUser;
 	int productoAEnviarID;
@@ -65,6 +67,12 @@ struct Envios {
 	string cantidad, calle, colonia, ciudad, estado, mensaje;
 	Envios* nextEnvio;
 	Envios* prevEnvio;
+	string obtenerNombreEnvio() {
+		string envio = "";
+		envio.append("Envio de ");
+		envio.append(productoAEnviar);
+		return envio;
+	}
 }*oEnvios, * aEnvios;
 
 bool isFull = false;
@@ -126,6 +134,8 @@ HWND hTxtChangeEnvioCiudad;
 HWND hTxtChangeEnvioEstado;
 HWND hTxtChangeEnvioMensaje;
 HWND hTxtChangeEnvioFecha;
+HWND hTxtFiltrar;
+HWND hTxtFiltrarFecha;
 
 char fotoVendedor[MAX_PATH] = "";
 char fotoProducto1[MAX_PATH] = "";
@@ -154,6 +164,8 @@ void saveGlobalId();//GlobalId.txt guardar el numero en el archivo binario
 string getText(HWND);
 void actualizarProducto(HWND hwnd);
 void eliminarProducto();
+tm* calcularFecha(string fechaEnv);
+string calcularEstadoDeEnvio(tm* ltm);
 
 BOOL CALLBACK fLogin(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK fRegister(HWND, UINT, WPARAM, LPARAM);
@@ -962,6 +974,45 @@ BOOL CALLBACK fMostrarProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 		//SendMessage(hLbMarca, LB_GETTEXT, (WPARAM)selIndexMarca, (LPARAM)cMarca);
 		//SendMessage(hLbMarca, LB_ADDSTRING, 0, (LPARAM)aProducto->marcaProducto.c_str());
 		switch (LOWORD(wparam)) {
+		case BTN_FILTRAR: {
+			hTxtFiltrar = GetDlgItem(hwnd, EB_FILTRAR);
+			string filtrar = getText(hTxtFiltrar);
+			HWND hLbProductos = GetDlgItem(hwnd, IDC_LIST1);
+			SendMessage(hLbProductos, LB_RESETCONTENT, 0, 0);
+			aProducto = oProducto;
+
+			int productosEncontrados = 0;
+
+			while (aProducto != NULL) {
+				string productoMin = "";
+				string filtrarMin = "";
+				for (int i = 0; i < aProducto->nombreProducto.length(); i++) {
+					productoMin.append(1, tolower(aProducto->nombreProducto[i]));
+				}
+				for (int i = 0; i < filtrar.length(); i++) {
+					filtrarMin.append(1, tolower(filtrar[i]));
+				}
+				if (aProducto->IDUser == userAccess->IDUser && strstr(productoMin.c_str(), filtrarMin.c_str())) {
+					int indexProducto = SendMessage(hLbProductos, LB_ADDSTRING, 0, (LPARAM)aProducto->nombreProducto.c_str());
+					SendMessage(hLbProductos, LB_SETITEMDATA, indexProducto, aProducto->IDProducto);
+					productosEncontrados++;
+				}
+				aProducto = aProducto->nextProducto;
+			}aProducto = oProducto;
+
+			if (productosEncontrados == 0) {
+				MessageBox(NULL, "El producto que intentas filtrar no existe en esta lista", "SIN PRODUCTOS", MB_OK);
+				while (aProducto != NULL) {
+					if (aProducto->IDUser == userAccess->IDUser) {
+						int indexProducto = SendMessage(hLbProductos, LB_ADDSTRING, 0, (LPARAM)aProducto->nombreProducto.c_str());
+						SendMessage(hLbProductos, LB_SETITEMDATA, indexProducto, aProducto->IDProducto);
+						productosEncontrados++;
+					}
+					aProducto = aProducto->nextProducto;
+				}aProducto = oProducto;
+			}
+
+		}break;
 		case IDC_LIST1: {
 			if (HIWORD(wparam) == LBN_SELCHANGE) {
 
@@ -1295,10 +1346,8 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 		while (aEnvios != NULL) {
 			if (aEnvios->IDUser == userAccess->IDUser) {
-				string nombreEnvio;
-				nombreEnvio.append("Envio #");
-				nombreEnvio.append(to_string(contadorEnvios));
-				int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
+
+				int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
 				SendMessage(hLbEnviosResumen, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
 				contadorEnvios++;
 			}
@@ -1345,6 +1394,11 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 			if (oEnvios == NULL) {
 				MessageBox(NULL, "No hay envios en la lista", "SIN PRODUCTOS", MB_OK);
+				break;
+			}
+
+			if (aEnvios->status == "Enviado") {
+				MessageBox(NULL, "No puedes eliminar un envio ya enviado", "ADVERTENCIA", MB_ICONQUESTION);
 				break;
 			}
 
@@ -1465,16 +1519,14 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		char cEnvios[50];
 		int selIndex = (int)SendMessage(hLbEnvios, LB_GETCURSEL, NULL, NULL);
 		SendMessage(hLbEnvios, LB_GETTEXT, (WPARAM)selIndex, (LPARAM)cEnvios);
+		hTxtChangeEnvioFecha = GetDlgItem(hwnd, LBL_ENVFECHAM);
 
 		aEnvios = oEnvios;
 
 		int contador = 1;
 		while (aEnvios != NULL) {
 			if (aEnvios->IDUser == userAccess->IDUser) {
-				string nombreEnvio;
-				nombreEnvio.append("Envio #");
-				nombreEnvio.append(to_string(contador));
-				int indexEnvio = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)nombreEnvio.c_str());
+				int indexEnvio = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
 				SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
 				contador++;
 			}
@@ -1484,6 +1536,36 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	}break;
 	case WM_COMMAND: {
 		switch (LOWORD(wparam)) {
+		case BTN_FILTRARFECHA: {
+			hTxtFiltrarFecha = GetDlgItem(hwnd, DTP_FILTRAR);
+			string filtrarFecha = getText(hTxtFiltrarFecha);
+			HWND hLbEnvios = GetDlgItem(hwnd, IDC_LIST11);
+			SendMessage(hLbEnvios, LB_RESETCONTENT, 0, 0);
+			aEnvios = oEnvios;
+
+			int enviosEncontrados = 0;
+
+			while (aEnvios != NULL) {
+				if (aEnvios->IDUser == userAccess->IDUser && aEnvios->fechastr==filtrarFecha) {
+					int indexEnvios = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
+					SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvios, aEnvios->IDEnvio);
+					enviosEncontrados++;
+				}
+				aEnvios = aEnvios->nextEnvio;
+			}aEnvios = oEnvios;
+
+			if (enviosEncontrados == 0) {
+				MessageBox(NULL, "El envio que intentas filtrar no existe en esta lista", "SIN ENVIOS", MB_OK);
+				while (aEnvios != NULL) {
+					if (aEnvios->IDUser == userAccess->IDUser) {
+						int indexEnvios = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
+						SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvios, aEnvios->IDEnvio);
+						enviosEncontrados++;
+					}
+					aEnvios = aEnvios->nextEnvio;
+				}aEnvios = oEnvios;
+			}
+		}break;
 		case IDC_LIST11: {
 			if (HIWORD(wparam) == LBN_SELCHANGE) {
 
@@ -1521,6 +1603,8 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 				SendDlgItemMessage(hwnd, LBL_CIUDAD1, WM_SETTEXT, NULL, (LPARAM)aShow->ciudad.c_str());
 				SendDlgItemMessage(hwnd, LBL_EDO1, WM_SETTEXT, NULL, (LPARAM)aShow->estado.c_str());
 				SendDlgItemMessage(hwnd, LBL_MSJ1, WM_SETTEXT, NULL, (LPARAM)aShow->mensaje.c_str());
+				SendDlgItemMessage(hwnd, LBL_ENVFECHA, WM_SETTEXT, NULL, (LPARAM)aShow->fechastr.c_str());
+				SendDlgItemMessage(hwnd, LBL_STATUSENV, WM_SETTEXT, NULL, (LPARAM)aShow->status.c_str());
 				/*HBITMAP hbFotoInfo = (HBITMAP)LoadImage(NULL, aShow->fotoP1, IMAGE_BITMAP, 600, 400, LR_LOADFROMFILE);
 				HWND hPbFotoInfo = GetDlgItem(hwnd, PB_SHOWFOTOP1);
 				SendMessage(hPbFotoInfo, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hbFotoInfo);
@@ -1572,6 +1656,7 @@ BOOL CALLBACK fModify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 	case WM_INITDIALOG: {
 		hMenu = LoadMenu(hGInstance, MAKEINTRESOURCE(IDR_MENU1));
 		SetMenu(hwnd, hMenu);
+
 		hTxtChangeEnvioProd = GetDlgItem(hwnd, LBL_ENVPROD);
 		hTxtChangeEnvioCant = GetDlgItem(hwnd, LBL_ENVCANT);
 		hTxtChangeEnvioPrec = GetDlgItem(hwnd, LBL_ENVMONTO);
@@ -1590,13 +1675,8 @@ BOOL CALLBACK fModify(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		SetWindowText(hTxtChangeEnvioCiudad, aEnvios->ciudad.c_str());
 		SetWindowText(hTxtChangeEnvioEstado, aEnvios->estado.c_str());
 		SetWindowText(hTxtChangeEnvioMensaje, aEnvios->mensaje.c_str());
-		char buffer[256];
-		//aEnvios->fecha->tm_mon--;
-		try {
-			//strftime(buffer, sizeof(buffer), "%d-%m-20%y", aEnvios->fecha);
-			//SetWindowText(hTxtChangeEnvioFecha, buffer);
-		}
-		catch (exception ex) {}
+		SetWindowText(hTxtChangeEnvioFecha, aEnvios->fechastr.c_str());
+
 	}break;
 	case WM_COMMAND: {
 		switch (LOWORD(wparam)) {
@@ -1757,54 +1837,12 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 			string mensaje = getText(hTxtMensaje);
 			string fechaEnv = getText(hTxtFechaEnvio);
 
-			tm* ltm = new tm;
-			char* pch;
-			char* dup = _strdup(fechaEnv.c_str());
-			pch = strtok(dup, "/");
-			ltm->tm_mday = atoi(strtok(NULL, "/"));
-			ltm->tm_year = atoi(strtok(NULL, "/"));
-			ltm->tm_mon = atoi(pch);
-			ltm->tm_hour = 1;
-			ltm->tm_min = 1;
-			ltm->tm_sec = 1;
-			ltm->tm_wday = 0;
-			ltm->tm_isdst = 0;
-			ltm->tm_yday = 0;
 
-			time(&tiempoActual);
-			infoTiempo = localtime(&tiempoActual);
+			tm* ltm = calcularFecha(fechaEnv);
 
+			//	string aFecha = year;
 
-			char day[5];
-			char month[5];
-			char year[5];
-
-
-			++infoTiempo->tm_mon;
-			infoTiempo->tm_year += 1900;
-
-
-			_itoa(infoTiempo->tm_mday, day, 10);
-			_itoa(infoTiempo->tm_mon, month, 10);
-			_itoa(infoTiempo->tm_year, year, 10);
-
-			string dia = day;
-			if (dia.length() < 2) {
-				dia.clear();
-				dia.append("0");
-				dia.append(day);
-			}
-
-			string mes = month;
-			if (mes.length() < 2) {
-				mes.clear();
-				mes.append("0");
-				mes.append(month);
-			}
-
-			string aFecha = year;
-
-			if (ltm->tm_year < infoTiempo->tm_year || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon < infoTiempo->tm_mon) || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon == infoTiempo->tm_mon && ltm->tm_mday <= infoTiempo->tm_mday)) {
+			if (ltm->tm_year < infoTiempo->tm_year || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon < infoTiempo->tm_mon) || (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon == infoTiempo->tm_mon && ltm->tm_mday < infoTiempo->tm_mday)) {
 				MessageBox(NULL, "Fecha de envio no valida", "NO ALTA", MB_ICONASTERISK);
 				break;
 			}
@@ -1828,6 +1866,11 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 			int productosAEnviar = atoi(cantidadEnvio.c_str());
 			int productosRestantes = productosActuales - productosAEnviar;
 
+
+
+			string estadoEnvio = calcularEstadoDeEnvio(ltm);
+
+
 			if (productosActuales < productosAEnviar) {
 				MessageBox(NULL, "No cuenta con los suficientes productos en el inventario", "NO ALTA", MB_ICONASTERISK);
 				break;
@@ -1846,10 +1889,12 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 					oEnvios->ciudad = ciudad;
 					oEnvios->estado = estado;
 					oEnvios->mensaje = mensaje;
+					oEnvios->status = estadoEnvio;
 					oEnvios->fecha = ltm;
 					oEnvios->IDUser = userAccess->IDUser;
 					oEnvios->nextEnvio = NULL;
 					oEnvios->prevEnvio = NULL;
+					oEnvios->fechastr = fechaEnv;
 					aEnvios = oEnvios;
 					aProducto->cantidadProducto = to_string(productosRestantes);
 				}
@@ -1871,11 +1916,13 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 					aEnvios->colonia = colonia;
 					aEnvios->ciudad = ciudad;
 					aEnvios->estado = estado;
+					aEnvios->status = estadoEnvio;
 					aEnvios->mensaje = mensaje;
 					aEnvios->fecha = ltm;
+					aEnvios->fechastr = fechaEnv;
 					aEnvios->IDUser = userAccess->IDUser;
 					aEnvios->nextEnvio = NULL;
-				//	aEnvios = oEnvios;
+					//	aEnvios = oEnvios;
 					aProducto->cantidadProducto = to_string(productosRestantes);
 				}
 				if (aProducto->cantidadProducto == "0") {
@@ -2420,6 +2467,10 @@ void loadEnvios() {
 				oEnvios->estado = temp->estado;
 				oEnvios->mensaje = temp->mensaje;
 				oEnvios->fecha = temp->fecha;
+				oEnvios->fechastr = temp->fechastr;
+				tm* ltm = calcularFecha(oEnvios->fechastr);
+				string estadoEnvio = calcularEstadoDeEnvio(ltm);
+				oEnvios->status = estadoEnvio;
 				GLOBAL_ENVIO_ID = oEnvios->IDEnvio + 1;
 				oEnvios->IDUser = temp->IDUser;
 				oEnvios->nextEnvio = NULL;
@@ -2451,6 +2502,11 @@ void loadEnvios() {
 				aEnvios->estado = temp->estado;
 				aEnvios->mensaje = temp->mensaje;
 				aEnvios->fecha = temp->fecha;
+				aEnvios->fechastr = temp->fechastr;
+				tm* ltm = calcularFecha(aEnvios->fechastr);
+				string estadoEnvio = calcularEstadoDeEnvio(ltm);
+				aEnvios->status = estadoEnvio;
+				//aEnvios->status = temp->status;
 				aEnvios->nextEnvio = NULL;
 				aEnvios = oEnvios;
 				delete reinterpret_cast<char*>(temp);
@@ -2589,3 +2645,61 @@ void eliminarProducto() {
 		aProducto = oProducto;
 	}
 }
+
+tm* calcularFecha(string fechaEnv) {
+	tm* ltm = new tm;
+	char* pch;
+	char* dup = _strdup(fechaEnv.c_str());
+	pch = strtok(dup, "/");
+	ltm->tm_mday = atoi(strtok(NULL, "/"));
+	ltm->tm_year = atoi(strtok(NULL, "/"));
+	ltm->tm_mon = atoi(pch);
+	ltm->tm_hour = 1;
+	ltm->tm_min = 1;
+	ltm->tm_sec = 1;
+	ltm->tm_wday = 0;
+	ltm->tm_isdst = 0;
+	ltm->tm_yday = 0;
+
+	time(&tiempoActual);
+	infoTiempo = localtime(&tiempoActual);
+
+
+	char day[5];
+	char month[5];
+	char year[5];
+
+
+	++infoTiempo->tm_mon;
+	infoTiempo->tm_year += 1900;
+
+
+	_itoa(infoTiempo->tm_mday, day, 10);
+	_itoa(infoTiempo->tm_mon, month, 10);
+	_itoa(infoTiempo->tm_year, year, 10);
+
+	string dia = day;
+	if (dia.length() < 2) {
+		dia.clear();
+		dia.append("0");
+		dia.append(day);
+	}
+
+	string mes = month;
+	if (mes.length() < 2) {
+		mes.clear();
+		mes.append("0");
+		mes.append(month);
+	}
+	return ltm;
+}
+
+string calcularEstadoDeEnvio(tm* ltm) {
+	string estadoEnvio = "Pendiente de envio";
+	if (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon == infoTiempo->tm_mon && ltm->tm_mday == infoTiempo->tm_mday) {
+		estadoEnvio = "Enviado";
+	}
+	return estadoEnvio;
+
+}
+

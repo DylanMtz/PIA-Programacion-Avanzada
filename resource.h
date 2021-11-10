@@ -45,6 +45,7 @@
 #define BTN_MODIFICAPRODUCTO            1019
 #define LBL_NOMBRE4                     1019
 #define BTN_CALCULARPRECIO              1019
+#define BTN_FILTRARFECHA                1019
 #define PB_FOTO                         1020
 #define IDC_BUTTON2                     1020
 #define BTN_MODIFYENV                   1020
@@ -57,6 +58,7 @@
 #define BTN_MOSTRARENVIO                1022
 #define BTN_CHECA                       1022
 #define LBL_CONFIRMARCONTRASENA         1022
+#define BTN_FILTRAR                     1022
 #define IDC_BUTTON4                     1023
 #define IDC_EDIT1                       1023
 #define PB_SHOWFOTOP1                   1023
@@ -64,6 +66,7 @@
 #define BTN_DELETEENV                   1023
 #define IDC_BUTTON5                     1024
 #define IDC_EDIT2                       1024
+#define EB_FILTRAR                      1024
 #define IDC_EDIT3                       1025
 #define PB_SHOWFOTOP2                   1025
 #define TXT_ENVCALLEM                   1025
@@ -164,6 +167,7 @@
 #define LBL_CIUDAD1                     1121
 #define LBL_EDO1                        1122
 #define LBL_MSJ1                        1123
+#define LBL_ENVFECHA                    1124
 #define LBL_ENVPROD                     1125
 #define LBL_ENVCANT                     1126
 #define LB_ENVIOSDELETEMODIFY           1127
@@ -171,6 +175,9 @@
 #define LBL_ENVMSJM                     1129
 #define LBL_ENVFECHAM                   1130
 #define BTN_CONFENVM                    1131
+#define LBL_STATUSENV                   1132
+#define IDC_DATETIMEPICKER1             1133
+#define DTP_FILTRAR                     1134
 #define ID_WATCHINFO                    40014
 #define ID_PRODUCTOS_VER                40020
 #define ID_SALIR                        40021
@@ -189,7 +196,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         40032
-#define _APS_NEXT_CONTROL_VALUE         1132
+#define _APS_NEXT_CONTROL_VALUE         1135
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
