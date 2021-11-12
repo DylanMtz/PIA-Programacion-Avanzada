@@ -67,10 +67,13 @@ struct Envios {
 	string cantidad, calle, colonia, ciudad, estado, mensaje;
 	Envios* nextEnvio;
 	Envios* prevEnvio;
-	string obtenerNombreEnvio() {
+	string obtenerNombreEnvio(int indice) {
 		string envio = "";
+		envio.append(to_string(indice+1));
+		envio.append(": ");
 		envio.append("Envio de ");
 		envio.append(productoAEnviar);
+		
 		return envio;
 	}
 }*oEnvios, * aEnvios;
@@ -146,6 +149,7 @@ char desc[MAX_PATH] = "";
 int GLOBAL_USER_ID = 1;
 int GLOBAL_PRODUCTO_ID = 1;
 int GLOBAL_ENVIO_ID = 1;
+int contadorDeEnviosOrdenados;
 
 void freeMemoryUser();
 void freeMemoryInfoVendedor();
@@ -166,6 +170,8 @@ void actualizarProducto(HWND hwnd);
 void eliminarProducto();
 tm* calcularFecha(string fechaEnv);
 string calcularEstadoDeEnvio(tm* ltm);
+bool esFechaMenor(tm* fechaUno, tm* fechaDos);
+Envios* obtenerEnviosOrdenados();
 
 BOOL CALLBACK fLogin(HWND, UINT, WPARAM, LPARAM);
 BOOL CALLBACK fRegister(HWND, UINT, WPARAM, LPARAM);
@@ -1343,16 +1349,22 @@ BOOL CALLBACK fEnvios(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 		aEnvios = oEnvios;
 
-
-		while (aEnvios != NULL) {
+		Envios* arregloDeEnvios = obtenerEnviosOrdenados();
+		for (int i = 0; i < contadorDeEnviosOrdenados; i++) {
+			int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)arregloDeEnvios[i].obtenerNombreEnvio(i).c_str());
+			SendMessage(hLbEnviosResumen, LB_SETITEMDATA, indexEnvio, arregloDeEnvios[i].IDEnvio);
+			contadorEnvios++;
+		}
+		
+	/*	while (aEnvios != NULL) {
 			if (aEnvios->IDUser == userAccess->IDUser) {
 
-				int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
+				int indexEnvio = SendMessage(hLbEnviosResumen, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio(contadorEnvios).c_str());
 				SendMessage(hLbEnviosResumen, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
 				contadorEnvios++;
 			}
 			aEnvios = aEnvios->nextEnvio;
-		}aEnvios = oEnvios;
+		}aEnvios = oEnvios;*/
 
 	}break;
 	case WM_COMMAND: {
@@ -1516,22 +1528,16 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		SetMenu(hwnd, hMenu);
 
 		HWND hLbEnvios = GetDlgItem(hwnd, IDC_LIST11);
-		char cEnvios[50];
-		int selIndex = (int)SendMessage(hLbEnvios, LB_GETCURSEL, NULL, NULL);
-		SendMessage(hLbEnvios, LB_GETTEXT, (WPARAM)selIndex, (LPARAM)cEnvios);
-		hTxtChangeEnvioFecha = GetDlgItem(hwnd, LBL_ENVFECHAM);
+	//	char cEnvios[50];
+	//	int selIndex = (int)SendMessage(hLbEnvios, LB_GETCURSEL, NULL, NULL);
+	//	SendMessage(hLbEnvios, LB_GETTEXT, (WPARAM)selIndex, (LPARAM)cEnvios);
+	//	hTxtChangeEnvioFecha = GetDlgItem(hwnd, LBL_ENVFECHAM);
 
-		aEnvios = oEnvios;
-
-		int contador = 1;
-		while (aEnvios != NULL) {
-			if (aEnvios->IDUser == userAccess->IDUser) {
-				int indexEnvio = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
-				SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvio, aEnvios->IDEnvio);
-				contador++;
-			}
-			aEnvios = aEnvios->nextEnvio;
-		}aEnvios = oEnvios;
+		Envios* arregloDeEnvios=obtenerEnviosOrdenados();
+		for (int i = 0; i < contadorDeEnviosOrdenados; i++) {
+			int indexEnvio = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)arregloDeEnvios[i].obtenerNombreEnvio(i).c_str());
+			SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvio, arregloDeEnvios[i].IDEnvio);
+		}
 
 	}break;
 	case WM_COMMAND: {
@@ -1547,7 +1553,7 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 			while (aEnvios != NULL) {
 				if (aEnvios->IDUser == userAccess->IDUser && aEnvios->fechastr==filtrarFecha) {
-					int indexEnvios = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
+					int indexEnvios = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio(enviosEncontrados).c_str());
 					SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvios, aEnvios->IDEnvio);
 					enviosEncontrados++;
 				}
@@ -1558,7 +1564,7 @@ BOOL CALLBACK fResumenEnvio(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 				MessageBox(NULL, "El envio que intentas filtrar no existe en esta lista", "SIN ENVIOS", MB_OK);
 				while (aEnvios != NULL) {
 					if (aEnvios->IDUser == userAccess->IDUser) {
-						int indexEnvios = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio().c_str());
+						int indexEnvios = SendMessage(hLbEnvios, LB_ADDSTRING, 0, (LPARAM)aEnvios->obtenerNombreEnvio(enviosEncontrados).c_str());
 						SendMessage(hLbEnvios, LB_SETITEMDATA, indexEnvios, aEnvios->IDEnvio);
 						enviosEncontrados++;
 					}
@@ -2696,10 +2702,51 @@ tm* calcularFecha(string fechaEnv) {
 
 string calcularEstadoDeEnvio(tm* ltm) {
 	string estadoEnvio = "Pendiente de envio";
-	if (ltm->tm_year == infoTiempo->tm_year && ltm->tm_mon == infoTiempo->tm_mon && ltm->tm_mday == infoTiempo->tm_mday) {
+	if(esFechaMenor(ltm, infoTiempo)){
 		estadoEnvio = "Enviado";
 	}
 	return estadoEnvio;
 
 }
 
+bool esFechaMenor(tm* fechaUno, tm* fechaDos) {
+	if (fechaUno->tm_year < fechaDos->tm_year || (fechaUno->tm_year == fechaDos->tm_year && fechaUno->tm_mon < fechaDos->tm_mon) || (fechaUno->tm_year == fechaDos->tm_year && fechaUno->tm_mon == fechaDos->tm_mon && fechaUno->tm_mday < fechaDos->tm_mday)) {
+		return true;
+	}
+	return false;
+}
+
+Envios* obtenerEnviosOrdenados() {
+	aEnvios = oEnvios;
+	Envios* arregloDeEnvios = NULL;
+	contadorDeEnviosOrdenados = 1;
+
+	while (aEnvios != NULL) {
+		if (aEnvios->IDUser == userAccess->IDUser) {
+			contadorDeEnviosOrdenados++;
+		}
+		aEnvios = aEnvios->nextEnvio;
+	}aEnvios = oEnvios;
+	arregloDeEnvios = new Envios[contadorDeEnviosOrdenados];
+	contadorDeEnviosOrdenados = 0;
+	while (aEnvios != NULL) {
+		if (aEnvios->IDUser == userAccess->IDUser) {
+			arregloDeEnvios[contadorDeEnviosOrdenados] = *aEnvios;
+			contadorDeEnviosOrdenados++;
+		}
+		aEnvios = aEnvios->nextEnvio;
+	}aEnvios = oEnvios;
+	Envios aux;
+	for (int i = 0; i < contadorDeEnviosOrdenados; i++) {
+		for (int j = i + 1; j < contadorDeEnviosOrdenados; j++) {
+			tm* fechaUno = calcularFecha(arregloDeEnvios[i].fechastr);
+			tm* fechaDos = calcularFecha(arregloDeEnvios[j].fechastr);
+			if (esFechaMenor(fechaUno, fechaDos)) {
+				aux = arregloDeEnvios[i];
+				arregloDeEnvios[i] = arregloDeEnvios[j];
+				arregloDeEnvios[j] = aux;
+			}
+		}
+	}
+	return arregloDeEnvios;
+}
