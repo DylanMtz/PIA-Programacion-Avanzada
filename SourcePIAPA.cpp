@@ -56,7 +56,6 @@ productos* buscadorDeProductos(int IP) {
 }
 
 struct Envios {
-	tm* fecha;
 	string fechastr;
 	string status;
 	int IDEnvio;
@@ -67,6 +66,7 @@ struct Envios {
 	string cantidad, calle, colonia, ciudad, estado, mensaje;
 	Envios* nextEnvio;
 	Envios* prevEnvio;
+	tm* fecha;
 	string obtenerNombreEnvio(int indice) {
 		string envio = "";
 		envio.append(to_string(indice+1));
@@ -816,23 +816,17 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 				break;
 			}
 
-			/*	if (oProducto != NULL) {
-					bool found = true;
-					while (aProducto->nombreProducto.compare(nombreDelProducto) != 0) {
-						if (aProducto->nextProducto == NULL && aProducto->IDUser == userAccess->IDUser) {
-							found = false;
-							break;
-						}
-						aProducto = aProducto->nextProducto;
-					}
-					if (found == true) {
-						MessageBox(NULL, "Ya hay un producto con ese nombre", "NO ALTA", MB_ICONASTERISK);
-						aProducto = oProducto;
-						break;
-					}
-					else
-						aProducto = oProducto;
-				}*/
+			bool esProductoValido = true;
+			for (int i = 0; i < precio.length() && esProductoValido; i++) {
+				if (precio[i] != '.' && !isdigit(precio[i])) {
+					esProductoValido=false;
+				}
+			}
+
+			if (esProductoValido == false) {
+				MessageBox(NULL, "El precio ingresado no es valido", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}
 
 
 			if (nombreDelProducto.compare("") == 1 && cantidadEnInventario.compare("") == 1 && codigoDelProducto.compare("") == 1 && descripcionDelProducto.compare("") == 1 && marcaDelProducto.compare("") == 1 && foto1.compare("") == 1 && foto2.compare("") == 1 && precio.compare("") == 1) {
@@ -843,11 +837,9 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 					oProducto->cantidadProducto = cantidadEnInventario;
 					oProducto->codigoProducto = codigoDelProducto;
 					oProducto->marcaProducto = marcaDelProducto;
-					for (int i = 0; i < MAX_PATH; i++) {
-						oProducto->descripcionProducto[i] = desc[i];
-						oProducto->fotoP1[i] = fotoProducto1[i];
-						oProducto->fotoP2[i] = fotoProducto2[i];
-					}
+					strcpy(oProducto->descripcionProducto, desc);
+					strcpy(oProducto->fotoP1, fotoProducto1);
+					strcpy(oProducto->fotoP2, fotoProducto2);
 					oProducto->precioProducto = precio;
 					oProducto->IDUser = userAccess->IDUser;
 					oProducto->nextProducto = NULL;
@@ -885,11 +877,23 @@ BOOL CALLBACK fProductos(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 						aProducto->codigoProducto = codigoDelProducto;
 						aProducto->marcaProducto = marcaDelProducto;
 						//aProducto->IDProducto = aProducto->prevProducto->IDProducto + 1;
-						for (int i = 0; i < MAX_PATH; i++) {
+						strcpy(aProducto->descripcionProducto, desc);
+						strcpy(aProducto->fotoP1, fotoProducto1);
+						strcpy(aProducto->fotoP2, fotoProducto2);
+						/*for (int i = 0; desc[i]!=0; i++) {
+							aProducto->descripcionProducto[i] = desc[i];
+						}
+						for (int i = 0; fotoProducto1[i] != 0; i++) {
+							aProducto->fotoP1[i] = fotoProducto1[i];
+						}
+						for (int i = 0; fotoProducto2[i] != 0; i++) {
+							aProducto->fotoP2[i] = fotoProducto2[i];
+						}*/
+						/*for (int i = 0; i < MAX_PATH; i++) {
 							aProducto->descripcionProducto[i] = desc[i];
 							aProducto->fotoP1[i] = fotoProducto1[i];
 							aProducto->fotoP2[i] = fotoProducto2[i];
-						}
+						}*/
 						aProducto->precioProducto = precio;
 						aProducto->IDUser = userAccess->IDUser;
 						aProducto->nextProducto = NULL;
@@ -1814,8 +1818,19 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 		case BTN_CALCULARPRECIO: {
 			string cantidadEnvio = getText(hTxtCantidadEnvio);
 
+			if (cantidadEnvio == "") {
+				MessageBox(NULL, "No se ha calculado el precio total del envio", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}
+
+			if (aProducto == NULL) {
+				MessageBox(NULL, "No ha seleccionado ningun producto", "NO ALTA", MB_ICONASTERISK);
+				break;
+			}
+
 			float fCantidadEnvio = atof(cantidadEnvio.c_str());
 			float fCantidadProducto = atof(aProducto->cantidadProducto.c_str());
+
 			if (fCantidadEnvio > fCantidadProducto) {
 				MessageBox(NULL, "No existe suficiente producto en el inventario", "NO ALTA", MB_ICONASTERISK);
 			}
@@ -1842,7 +1857,7 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 			string estado = getText(hTxtEstado);
 			string mensaje = getText(hTxtMensaje);
 			string fechaEnv = getText(hTxtFechaEnvio);
-
+			//mensaje.append(0);
 
 			tm* ltm = calcularFecha(fechaEnv);
 
@@ -1875,7 +1890,7 @@ BOOL CALLBACK faltaEnviosNew(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) 
 
 
 			string estadoEnvio = calcularEstadoDeEnvio(ltm);
-
+			//estadoEnvio.append(0);
 
 			if (productosActuales < productosAEnviar) {
 				MessageBox(NULL, "No cuenta con los suficientes productos en el inventario", "NO ALTA", MB_ICONASTERISK);
@@ -2472,7 +2487,7 @@ void loadEnvios() {
 				oEnvios->ciudad = temp->ciudad;
 				oEnvios->estado = temp->estado;
 				oEnvios->mensaje = temp->mensaje;
-				oEnvios->fecha = temp->fecha;
+				//oEnvios->fecha = temp->fecha;
 				oEnvios->fechastr = temp->fechastr;
 				tm* ltm = calcularFecha(oEnvios->fechastr);
 				string estadoEnvio = calcularEstadoDeEnvio(ltm);
@@ -2507,7 +2522,7 @@ void loadEnvios() {
 				aEnvios->ciudad = temp->ciudad;
 				aEnvios->estado = temp->estado;
 				aEnvios->mensaje = temp->mensaje;
-				aEnvios->fecha = temp->fecha;
+				//aEnvios->fecha = temp->fecha;
 				aEnvios->fechastr = temp->fechastr;
 				tm* ltm = calcularFecha(aEnvios->fechastr);
 				string estadoEnvio = calcularEstadoDeEnvio(ltm);
@@ -2554,7 +2569,10 @@ void loadProducto() {
 				oProducto->IDProducto = temp->IDProducto;
 				GLOBAL_PRODUCTO_ID = oProducto->IDProducto + 1;
 				oProducto->IDUser = temp->IDUser;
-				for (int i = 0; i < MAX_PATH; i++) {
+				strcpy(oProducto->descripcionProducto, temp->descripcionProducto);
+				strcpy(oProducto->fotoP1, temp->fotoP1);
+				strcpy(oProducto->fotoP2, temp->fotoP2);
+			/*	for (int i = 0; i < MAX_PATH; i++) {
 					oProducto->descripcionProducto[i] = temp->descripcionProducto[i];
 				}
 				for (int i = 0; i < MAX_PATH; i++) {
@@ -2562,7 +2580,7 @@ void loadProducto() {
 				}
 				for (int i = 0; i < MAX_PATH; i++) {
 					oProducto->fotoP2[i] = temp->fotoP2[i];
-				}
+				}*/
 				oProducto->nextProducto = NULL;
 				oProducto->prevProducto = NULL;
 				aProducto = oProducto;
@@ -2587,7 +2605,7 @@ void loadProducto() {
 				aProducto->IDProducto = temp->IDProducto;
 				GLOBAL_PRODUCTO_ID = aProducto->IDProducto + 1;
 				aProducto->IDUser = temp->IDUser;
-				for (int i = 0; i < MAX_PATH; i++) {
+			/*	for (int i = 0; i < MAX_PATH; i++) {
 					aProducto->descripcionProducto[i] = temp->descripcionProducto[i];
 				}
 				for (int i = 0; i < MAX_PATH; i++) {
@@ -2595,7 +2613,10 @@ void loadProducto() {
 				}
 				for (int i = 0; i < MAX_PATH; i++) {
 					aProducto->fotoP2[i] = temp->fotoP2[i];
-				}
+				}*/
+				strcpy(aProducto->descripcionProducto, temp->descripcionProducto);
+				strcpy(aProducto->fotoP1, temp->fotoP1);
+				strcpy(aProducto->fotoP2, temp->fotoP2);
 				aProducto->nextProducto = NULL;
 				aProducto = oProducto;
 				delete reinterpret_cast<char*>(temp);
